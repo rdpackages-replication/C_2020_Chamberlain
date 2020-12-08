@@ -6,9 +6,9 @@ This work was supported in part by the National Science Foundation through grant
 
 https://rdpackages.github.io/replication
 
-## Empirical Application: Head Start Data 
+## Empirical Application: Head Start Data
 
-- Source: [https://www.chamberlainseminar.org](https://www.chamberlainseminar.org)
+- Source: Ludwig and Miller (2007): [Does Head Start Improve Children’s Life Chances? Evidence from a Regression Discontinuity Design](https://doi.org/10.1162/qjec.122.1.159), _Quarterly Journal of Economics_ 122(1): 159-208.
 
 - Dataset: [dta](headstart.dta)
 
@@ -17,5 +17,8 @@ https://rdpackages.github.io/replication
 ## Reference
 
 - Slides: [pdf](https://rdpackages.github.io/references/Cattaneo_2020_Chamberlain.pdf).
+
+- Video: [https://www.chamberlainseminar.org](https://www.chamberlainseminar.org)
+
 
 <br><br>
