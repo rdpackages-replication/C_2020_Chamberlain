@@ -8,7 +8,7 @@ https://rdpackages.github.io/replication
 
 ## Empirical Application: Head Start Data 
 
-- Source: 
+- Source: [https://www.chamberlainseminar.org](https://www.chamberlainseminar.org)
 
 - Dataset: [dta](headstart.dta)
 
