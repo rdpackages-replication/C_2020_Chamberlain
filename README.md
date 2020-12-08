@@ -16,7 +16,7 @@ https://rdpackages.github.io/replication
 
 ## Reference
 
-- Slides: [pdf](https://rdpackages.github.io/references/Cattaneo_2020_Chamberlain.pdf).
+- Slides: [pdf](https://raw.githubusercontent.com/rdpackages-replication/C_2020_Chamberlain/master/C_2020_Chamberlain.pdf).
 
 - Video: [https://www.chamberlainseminar.org](https://www.chamberlainseminar.org)
 
