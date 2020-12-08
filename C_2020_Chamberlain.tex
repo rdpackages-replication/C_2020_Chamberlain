@@ -1,0 +1,1033 @@
+\documentclass[9pt]{beamer}
+\usefonttheme{serif}
+\usepackage{amssymb,amsfonts,amsmath,bbm}
+\usepackage{subcaption,graphicx,hyperref}
+\captionsetup{compatibility=false}
+
+\setcounter{MaxMatrixCols}{30}
+\usepackage{scalefnt}
+
+\providecommand{\U}[1]{\protect\rule{.1in}{.1in}}
+\newenvironment{stepenumerate}{\begin{enumerate}[<+->]}{\end{enumerate}}
+\newenvironment{stepitemize}{\begin{itemize}[<+->]}{\end{itemize} }
+\newenvironment{stepenumeratewithalert}{\begin{enumerate}[<+-| alert@+>]}{\end{enumerate}}
+\newenvironment{stepitemizewithalert}{\begin{itemize}[<+-| alert@+>]}{\end{itemize} }
+\usetheme{Boadilla}
+
+\AtBeginSection[]
+{
+\begin{frame}<beamer>
+\frametitle{Outline}
+\tableofcontents[currentsection]
+\end{frame}
+}
+\AtBeginSubsection[]
+{
+\begin{frame}[plain]{Outline}
+\tableofcontents[currentsection,currentsubsection]
+\end{frame}
+}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand{\I}{{\rm 1\hspace*{-0.4ex}\rule{0.1ex}{1.52ex}\hspace*{0.2ex}}}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{}
+
+% Define some colors:
+\definecolor{DarkFern}{HTML}{407428}
+\definecolor{DarkCharcoal}{HTML}{4D4944}
+\colorlet{Fern}{DarkFern!85!white}
+\colorlet{Charcoal}{DarkCharcoal!85!white}
+\colorlet{LightCharcoal}{Charcoal!50!white}
+\colorlet{AlertColor}{red}
+\colorlet{DarkRed}{red!70!black}
+%\colorlet{DarkBlue}{blue!80!black}
+\definecolor{DarkBlue}{rgb}{0,0,0.9}
+\colorlet{DarkGreen}{green!70!black}
+\definecolor{shadecolor}{rgb}{0.9,0.9,0.8}
+\definecolor{shadecolor2}{rgb}{0.7,0.7,0.7}
+
+\newcommand{\light}[1]{\textcolor{shadecolor2}{#1}}
+\newcommand{\white}[1]{\textcolor{white}{#1}}
+
+% Blackboard shortcuts.
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\renewcommand{\P}{\mathbb{P}}
+\renewcommand{\I}{\mathbbm{1}}
+
+% RD shortcuts
+\renewcommand{\c}{c}
+\newcommand{\W}{\mathcal{W}}
+
+% Bold fonts.
+\newcommand{\bY}{\mathbf{Y}}
+\newcommand{\bT}{\mathbf{T}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\bZ}{\mathbf{Z}}
+\newcommand{\bz}{\mathbf{z}}
+\newcommand{\be}{\mathbf{e}}
+\newcommand{\br}{\mathbf{r}}
+\newcommand{\bP}{\mathbf{P}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\bS}{\mathbf{S}}
+\newcommand{\bF}{\mathbf{F}}
+\newcommand{\bR}{\mathbf{R}}
+\newcommand{\bK}{\mathbf{K}}
+\newcommand{\bI}{\mathbf{I}}
+
+\newcommand{\bbeta}{\boldsymbol{\beta}}
+\newcommand{\bgamma}{\boldsymbol{\gamma}}
+\newcommand{\btau}{\boldsymbol{\tau}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bdelta}{\boldsymbol{\delta}}
+\newcommand{\bmu}{\boldsymbol{\mu}}
+\newcommand{\bvarphi}{\boldsymbol{\varphi}}
+\newcommand{\biota}{\boldsymbol{\iota}}
+
+%% path to where some of the figures are
+\newcommand{\pathfig}{figures}
+
+\renewcommand{\thefootnote}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Set arrows
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{tikz}
+\usetikzlibrary{shapes.arrows}
+
+
+\tikzset{
+	myarrow/.style={
+		draw,
+		fill=orange,
+		single arrow,
+		minimum height=3.5ex,
+		single arrow head extend=1ex
+	}
+}
+\newcommand{\arrowup}{%
+	\tikz [baseline=-0.5ex]{\node [myarrow,rotate=90] {};}
+}
+\newcommand{\arrowdown}{%
+	\tikz [baseline=-1ex]{\node [myarrow,rotate=-90] {};}
+}
+%----------------------------------------------
+
+
+\begin{document}
+
+\title[]{Tutorial on Regression Discontinuity Designs
+	     \thanks{Prepared for \href{https://www.chamberlainseminar.org/}{The Gary Chamberlain Online Seminar in Econometrics}.}
+	     \thanks{Complementary materials available at \url{https://rdpackages.github.io/}.}\medskip}
+\author{Matias D. Cattaneo\medskip \\
+	    Princeton University\medskip }
+\maketitle
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Designs and Frameworks}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}\frametitle{Causal Inference \& Program Evaluation}
+	\begin{itemize}
+		\item Main goal: learn about treatment effect of policy or intervention.\bigskip
+		
+		\item If treatment randomization available, easy to estimate treatment effects.\bigskip
+		
+		\item If treatment randomization not available, turn to observational studies.\medskip
+		
+		\begin{itemize}
+			\item Selection on Observables, Instrumental Variables, Selection on Unobservables, etc.\bigskip
+		\end{itemize}
+		
+		\item \textbf{Regression Discontinuity (RD) designs}.\medskip
+		
+		\begin{itemize}
+			\item Simple and objective. Requires little information, if design available.\medskip
+			
+			\item Might be viewed as a ``local'' randomized trial.\medskip
+			
+			\item Easy to ``falsify'' and easy to interpret.\medskip
+			
+			\item \emph{Careful}: very local!
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{RD Designs: Building Block}
+	\begin{itemize}
+		\item \textbf{Triplet}: \textit{score}, \textit{cutoff}, \textit{treatment}.\medskip 
+		\begin{itemize}
+			\item Units receive a score.\medskip 
+			
+			\item A treatment is assigned based on the score and a \textit{known} cutoff.\medskip
+			
+			\item The treatment\smallskip
+			\begin{itemize}
+				\item[] is offered to units whose score is greater than the cutoff.\smallskip 
+				\item[] is withheld from units whose score is less than the cutoff.\medskip
+			\end{itemize}
+		\end{itemize}
+
+	\begin{figure}[h]
+		\centering\includegraphics[scale=0.30]{\pathfig/Fig1-AssProbSharp.pdf}
+	\end{figure}
+
+		\item Under assumptions, the abrupt change in the probability of treatment assignment allows us to learn about causal treatment effects.\medskip 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{RD Designs: Taxonomy}
+	\begin{itemize}
+		\item \textbf{Frameworks}.\medskip
+		\begin{itemize}
+			\item Identification: Continuity/Extrapolation,	Local Randomization.\medskip
+			\item Score: Continuous, Many Repeated, Few Repeated.\bigskip
+		\end{itemize}
+		
+		\item \textbf{Settings}.\medskip
+		\begin{itemize}
+			\item Sharp, Fuzzy, Kink, Kink Fuzzy.\medskip
+			
+			\item Multiple Cutoff, Multiple Scores, Geographic RD.\medskip
+			
+			\item Dynamic, Continuous Treatments, Time, etc.\bigskip
+		\end{itemize}
+	
+		\item \textbf{Parameters of Interests}.\medskip
+		\begin{itemize}
+			\item Average Effects, Quantile/Distributional Effects, Partial Effects.\medskip
+			\item Heterogeneity, Covariate-Adjustment, Differences, Time.\medskip
+			\item Extrapolation.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[t]\frametitle{RCTs vs. (Sharp) RD Designs}
+	\bigskip
+	\begin{minipage}{\textwidth}
+	\begin{itemize}
+		\item \textbf{Notation}: $(Y_i(0),Y_i(1),X_i)$, $i=1,2,\dots,n$.\bigskip
+		
+		\item \textbf{Treatment}: $T_i\in\{0,1\}$,\qquad$T_i$ independent of $(Y_i(0),Y_i(1),X_i)$.\bigskip
+		
+		\item \textbf{Data}: $(Y_{i},T_{i},X_{i})$, $i=1,2,\dots,n$, with
+		\[
+		Y_{i}=\left\{
+		\begin{tabular}
+			[c]{lll}%
+			$Y_{i}(0)$ &  & if $T_{i}=0\smallskip$\\
+			$Y_{i}(1)$ &  & if $T_{i}=1$
+		\end{tabular}
+		\right.
+		\]
+	\end{itemize}\bigskip
+	\end{minipage}
+	\begin{minipage}{\textwidth}
+	\begin{itemize}
+		\item \textbf{Average Treatment Effect}:
+		\[\tau_{\mathtt{ATE}}=\E[Y_{i}(1)-Y_{i}(0)]=\E[Y_{i}|T=1]-\E[Y_{i}|T=0]\]
+		
+	\end{itemize}
+	\end{minipage}	
+\end{frame}
+
+\begin{frame}[t]\frametitle{RCTs vs. (Sharp) RD Designs}
+	\bigskip
+	\begin{minipage}{\textwidth}
+	\begin{itemize}
+		\item \textbf{Notation}: $(Y_{i}(0),Y_{i}(1),X_{i})$, $i=1,2,\dots,n$, \qquad$X_{i}$ score.\bigskip
+		
+		\item \textbf{Treatment}: $T_{i}\in\{0,1\}$,\qquad$T_{i}=\I(X_{i}\geq \c)$,\qquad $\c$ cutoff.\bigskip
+		
+		\item \textbf{Data}: $(Y_{i},T_{i},X_{i})$, $i=1,2,\dots,n$, with
+		\[
+		Y_{i}=\left\{
+		\begin{tabular}
+			[c]{lll}%
+			$Y_{i}(0)$ &  & if $T_{i}=0\smallskip$\\
+			$Y_{i}(1)$ &  & if $T_{i}=1$%
+		\end{tabular}
+		\right.
+		\]
+	\end{itemize}\bigskip
+	\end{minipage}
+	\begin{minipage}{\textwidth}
+	\begin{itemize}
+		\item \textbf{Average Treatment Effect at the cutoff} (Continuity-based):
+		\[\tau_{\mathtt{SRD}} = \E[Y_i(1)-Y_i(0)|X_i=\c] = \lim_{x\downarrow\c}\E[Y_i|X_i=x]-\lim_{x\uparrow\c}\E[Y_i|X_i=x]\]\smallskip
+		
+		\item \textbf{Average Treatment Effect in a neighborhood} (LR-based):
+		\[\tau_{\mathtt{LR}} = \E[Y_i(1)-Y_i(0)|X_{i}\in\W] = \frac{1}{N_1} \sum_{X_i\in\W,T_i=1} Y_i - \frac{1}{N_0} \sum_{X_i\in\W,T_i=0} Y_i\]
+	\end{itemize}
+	\end{minipage}
+\end{frame}
+
+\begin{frame}
+	\[\tau_\mathtt{SRD}
+	  = \underset{\textcolor{black}{\text{Unobservable}}}{\underbrace{\E[Y_{i}(1)-Y_{i}(0)|X_i=\c]}} 
+	  = \underset{\textcolor{red}{\text{Estimable}}}{\underbrace{\lim_{x\downarrow{\c}} \E[Y_i|X_i=x]}} 
+	     - \underset{\textcolor{DarkBlue}{\text{Estimable}}}{\underbrace{\lim_{x\uparrow{\c}} \E[Y_i|X_i=x]}}
+	\]
+	\begin{figure}
+		\vspace{-0.1in}
+		\centering
+		\includegraphics[scale=0.5]{\pathfig/Fig3-IdentSharp-step3.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\[ T_i \text{ independent of } (Y_i(0),Y_i(1)) \text{ for all } X_i\in\W=[\c-w,c+w] \]
+	\begin{figure}
+		\vspace{-0.1in}
+		\centering
+		\includegraphics[scale=0.5]{\pathfig/Fig11-RDLocRand.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Fuzzy RD Designs}
+	\begin{itemize}
+		\item \textbf{Imperfect compliance.}\medskip 
+		\begin{itemize}
+			\item probability of receiving treatment changes at $\c$, but not necessarily from 0 to 1.\bigskip
+		\end{itemize}
+		
+		\item Canonical Parameter:
+		\begin{align*}
+			\tau_{\mathtt{FRD}}
+			&=\frac{\E[(Y_{i}(1)-Y_{i}(0)(D_{i}(1)-D_{i}(0)))|X_{i}=\c]}{\E[D_{i}(1)|X_{i}=\c]-\E[D_{i}(0)|X_{i}=\c]}\\
+			&=\frac{\lim_{x\downarrow\c}\E[Y_i|X_i=x]-\lim_{x\uparrow\c}\E[Y_i|X_i=x]}{\lim_{x\downarrow\c}\E[D_i|X_i=x]-\lim_{x\uparrow\c}\E[D_i|X_i=x]}
+		\end{align*}
+		where $Y_{i}(t) = Y_{i}(0)(1-D_{i}(t)) + Y_{i}(1)D_{i}(t)$ and $D_{i}(t) = D_{i}(0)(1-T_{i}) + D_{i}(1)T_{i}$.\bigskip
+		
+		\item Similarly for Local Randomization framework.\bigskip
+		
+		\item Different interpretations under different assumptions.\bigskip
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{subfigure}[t]{0.47\textwidth}
+			\centering
+			\includegraphics[scale=0.30]{\pathfig/Fig1-AssProbSharp.pdf}
+			\caption{Sharp RD}       
+		\end{subfigure}
+		\hspace{0.1in}
+		\begin{subfigure}[t]{0.47\textwidth}
+			\centering
+			\includegraphics[scale=0.30]{\pathfig/Fig1-AssProbFuzzy.pdf}
+			\caption{Fuzzy RD (one-sided compliance)}
+		\end{subfigure}
+	\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{(Sharp and Fuzzy) Kink RD Designs}
+	\begin{itemize}
+		\item Treatment assigned via continuous score formula, but slope changes discontinuously at ``kink'' point ($\c$).\bigskip
+		\item SKRD Parameter:
+		\[\tau_{\mathtt{KRD}}=\frac{\lim_{x\downarrow\c}\frac{d}{dx}\E[Y_{i}|X_{i}=x]-\lim_{x\uparrow\c}\frac{d}{dx}\E[Y_{i}|X_{i}=x]}
+		                           {\lim_{x\downarrow\c}\frac{d}{dx}b(x)-\lim_{x\uparrow\c}\frac{d}{dx}b(x)}
+		\]
+		where $b(x)$ known function inducing ``kink''.\bigskip
+		
+		\item FKRD Parameter:
+		\[\tau_{\mathtt{KRD}}=\frac{\lim_{x\downarrow\c}\frac{d}{dx}\E[Y_{i}|X_{i}=x]-\lim_{x\uparrow\c}\frac{d}{dx}\E[Y_{i}|X_{i}=x]}
+		                           {\lim_{x\downarrow\c}\frac{d}{dx}\E[D_{i}|X_{i}=x]-\lim_{x\uparrow\c}\frac{d}{dx}\E[D_{i}|X_{i}=x]}
+		\]
+		\smallskip
+		
+		\item Different interpretation under different assumptions.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{subfigure}[t]{0.47\textwidth}
+			\centering
+			\includegraphics[scale=0.30]{\pathfig/Fig15-Kink-levels.pdf}
+			\caption{Kink RD (levels)}       
+		\end{subfigure}
+		\hspace{0.1in}
+		\begin{subfigure}[t]{0.47\textwidth}
+			\centering
+			\includegraphics[scale=0.30]{\pathfig/Fig15-Kink-derivatives.pdf}
+			\caption{Kink RD (derivatives)}
+		\end{subfigure}
+	\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Multi-cutoff, Multi-Score, Geographic RD Designs}
+	\begin{itemize}
+		\item \textbf{Multi-cutoff RD designs}.\medskip
+		\begin{itemize}
+			\item $C_{i}\in\mathcal{C}$ with $\mathcal{C}=\{c_{1},c_{2},\cdots,c_{J}\}$ or $\mathcal{C}=\mathcal{[}\underline{c},\overline{c}]$.\medskip
+			\item Two strategies: normalize-and-pool ($\tilde{X}_{i}=X_{i}-C_{i}$), or cutoff-by-cutoff analysis.\medskip
+			\item Different interpretation under different assumptions.\bigskip
+		\end{itemize}
+		
+		\item \textbf{Multi-score RD designs}.\medskip
+		\begin{itemize}
+			\item $\mathbf{X}_{i}=(X_{1i},X_{2i},\dots,X_{di})'$ and $\mathbf{\c}=(\c_1,\c_2,\dots,c_d)'$.\medskip
+			\item Can always be mapped back to Multi-cutoff RD designs.\medskip
+			\item Leading special cases: Test scores, geography ($d=2$).\medskip
+			\item Different interpretation under different assumptions.\bigskip
+		\end{itemize}
+		
+		\item \textbf{Other RD-like designs}.\medskip
+		\begin{itemize}
+			\item RD in density and bunching designs.\medskip
+			\item RD in time.\medskip
+			\item Dynamic RD designs.\medskip
+			\item etc.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{subfigure}[t]{0.48\textwidth}
+			\centering
+			\includegraphics[scale=0.30]{\pathfig/Fig13-MultiCutoffRD.pdf}
+			\caption{Multi-cutoff:\newline $\tau_\mathtt{SRD}(x,c)=\E[Y_i(1)-Y_i(0)|X_i=x,C_i=c]$}       
+		\end{subfigure}
+		\begin{subfigure}[t]{0.5\textwidth}
+			\centering
+			\includegraphics[scale=0.30]{\pathfig/Fig14-MultiScoreRD-Example.pdf}
+			\caption{Multi-score:\newline $\tau_\mathtt{SRD}(x_1,x_2)=\E[Y_i(1)-Y_i(0)|X_{1i}=x_1,X_{2i}=x]$}
+		\end{subfigure}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}
+		\centering\includegraphics[scale=.3] {\pathfig/GeoRD-NJ-Display.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Highlights and Main Takeaways}
+	\begin{itemize}
+		\item RD designs exploit ``variation'' near the cutoff.\bigskip
+		
+		\item Causal effect is different (in general) than RCT.\bigskip
+
+		\item No ``overlap'' (sharp) so extrapolation is unavoidable (local or global).\bigskip
+
+		\item Graphical analysis is both very useful and very dangerous.\bigskip
+
+		\item Need to work with data near cutoff $\Longrightarrow$ bandwidth or window selection.\bigskip
+		
+		\item There exist many design-specific falsification/validation methods.\bigskip
+		
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Estimation and Inference}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}\frametitle{Empirical Illustration: Head Start (Ludwig and Miller, 2007,QJE)}
+	\begin{itemize}
+		\item \textbf{Problem}: impact of Head Start on Infant Mortality\bigskip
+		
+		\item \textbf{Data}:\medskip
+		
+		~\qquad$Y_{i}=$ child mortality 5 to 9 years old\medskip
+		
+		~\qquad$T_{i}=$ whether county received Head Start assistance\medskip
+		
+		~\qquad$X_{i}=$ 1960 poverty index\quad($\c=59.1984$)\medskip
+		
+		~\qquad$Z_{i}=$ see database.\bigskip
+		
+		\item \textbf{Potential outcomes}:\medskip
+		
+		~\qquad$Y_{i}(0)=$ child mortality if \textbf{had not received} Head
+		Start\medskip
+		
+		~\qquad$Y_{i}(1)=$ child mortality if \textbf{had received} Head Start\bigskip
+		
+		\item \textbf{Causal Inference}:\medskip
+		
+		~\qquad$Y_{i}(0) \quad\neq\quad Y_{i}|T_{i}=0$\qquad\qquad and\qquad\qquad$Y_{i}(1) \quad\neq\quad Y_{i}|T_{i}=1$\bigskip
+	\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{RD Packages}
+	\smallskip
+	\begin{center}
+		\url{https://rdpackages.github.io/}\medskip
+	\end{center}
+	
+	\begin{itemize}
+		\item \textbf{rdrobust}: estimation, inference and graphical presentation using local polynomials, partitioning, and spacings estimators.\medskip
+		\begin{itemize}
+			\item \texttt{rdrobust}, \texttt{rdbwselect}, \texttt{rdplot}.\bigskip
+		\end{itemize}
+		
+		\item \textbf{rddensity}: discontinuity in density tests (manipulation testing) using both local polynomials and binomial tests.\medskip
+		\begin{itemize}
+			\item \texttt{rddensity}, \texttt{rdbwdensity}.\bigskip
+		\end{itemize}
+	
+		\item \textbf{rdlocrand}: covariate balance, binomial tests, randomization inference methods (window selection \& inference).\medskip		
+		\begin{itemize}
+			\item \texttt{rdrandinf}, \texttt{rdwinselect}, \texttt{rdsensitivity}, \texttt{rdrbounds}.\bigskip
+		\end{itemize}
+		
+		\item \textbf{rdmulti}: multiple cutoffs and multiple scores.\bigskip
+		
+		\item \textbf{rdpower}: power, sample selection and minimum detectable effect size.
+		
+	\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{RD Plots}
+	\begin{itemize}
+		\item Main ingredients:\medskip
+		\begin{itemize}
+			\item Global smooth polynomial fit.\medskip
+			\item Binned discontinuous local-means fit.\bigskip
+		\end{itemize}
+		
+		\item Main goals:\medskip
+		\begin{itemize}
+			\item Graphical (heuristic) representation.\medskip
+			\item Detention of discontinuities.\medskip
+			\item Representation of variability.\bigskip
+		\end{itemize}
+		
+		\item Tuning parameters:\medskip
+		\begin{itemize}
+			\item Global polynomial degree.\medskip
+			\item Location (ES or QS) and number of bins.\bigskip
+		\end{itemize}
+		
+		\item \textbf{Great to convey ideas but horrible to draw conclusions}.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Estimation and Inference Methods}
+	\begin{itemize}
+		\item \textbf{Continuity/Extrapolation}: Local polynomial approach.\medskip
+		\begin{itemize}
+			\item Localization: bandwidth selection (trade-off bias and variance).\medskip
+			\item Point estimation: ``flexible'' (nonparametric).\medskip
+			\item Inference: robust bias-corrected methods.\bigskip
+		\end{itemize}
+		
+		\item \textbf{Local Randomization}: finite-sample and large-sample inference.\medskip
+		\begin{itemize}
+			\item Localization: window selection (via local independence implications).\medskip
+			\item Point estimation: parametric, finite-sample (Fisher) or large-sample (Neyman/SP).\medskip
+			\item Inference: randomization inference (Fisher) or large-sample (Neyman/SP).\bigskip
+		\end{itemize}
+		
+		\item Many refinements and other methods exist (EL, Bayesian, Uniformity, etc.).\medskip
+		\begin{itemize}
+			\item Do not offer much improvements in applications.\medskip
+			\item Can be overly complicated (lack of transparency).\medskip
+			\item Can depend on user-chosen tuning parameters (lack of replicability).\bigskip
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Continuity/Extrapolation: Local Polynomial Methods} %% TO DO
+	\begin{itemize}
+		\item Global polynomial regression: \textbf{not recommended}.\medskip
+		\begin{itemize}
+			\item Runge's Phenomenon, counterintuitive weights, overfitting, lack of robustness.\bigskip
+		\end{itemize}
+		
+		\item Local polynomial regression: captures idea of ``localization''.\medskip
+	\end{itemize}
+	\begin{center}
+	\resizebox{.65\textwidth}{!}{\begin{tabular}{c}
+		Choose low poly order ($p$) and weighting scheme ($K(\cdot)$) \vspace{0.15in}\\
+		\arrowdown \vspace{0.15in}\\
+		Choose bandwidth $h$: MSE-optimal or CE-optimal \vspace{0.15in}\\
+		\arrowdown \vspace{0.15in}\\
+		Construct point estimator $\hat{\tau}$\\ (MSE-optimal $h$ $\implies$ optimal estimator) \vspace{0.15in}\\
+		\arrowdown \vspace{0.15in}\\
+		Conduct robust bias-corrected inference\\
+		(CE-optimal $h$ $\implies$ optimal distributional approximation)
+	\end{tabular}}
+	\end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Local Polynomial Methods}
+	\begin{itemize}
+		\item \textbf{Idea}: approximate regression functions for control and treatment units \emph{locally}.\bigskip
+		
+		\item ``Local-linear'' ($p=1$) estimator (w/ weights $K(\cdot)$):\medskip
+		\[%
+		\begin{tabular}
+			[c]{cc|cc}%
+			$-h\leq X_{i}<\c:$ &  &  & $\c\leq X_{i}\leq h:$\\
+			&  &  & \\
+			$Y_{i}=\alpha_{-}+(X_{i}-\c)\cdot\beta_{-}+\varepsilon_{-,i}$ &  &  &
+			$Y_{i}=\alpha_{+}+(X_{i}-\c)\cdot\beta_{+}+\varepsilon_{+,i}$%
+		\end{tabular}
+		\]
+		\medskip
+		
+		\begin{itemize}
+			\item Treatment effect (at the cutoff): $\hat{\tau}_{\mathtt{SRD}}(h)=\hat{\alpha}_{+}-\hat{\alpha}_{-}$\bigskip
+		\end{itemize}
+		
+		\item Can be estimated using linear models (w/ weights $K(\cdot)$):
+		\[Y_{i}=\alpha+\tau_{\mathtt{SRD}}\cdot T_{i}+(X_{i}-\c)\cdot\beta_{1}+T_{i}\cdot(X_{i}-\c)\cdot\gamma_{1}+\varepsilon_{i}, \qquad |X_{i}-c|\leq h\medskip\]
+		
+		\item Given $p$, $K$, $h$ chosen $\implies$ weighted least squares estimation.\smallskip
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{center}
+			\includegraphics[scale=0.60]{\pathfig/Fig6-Kernels-int1.pdf}
+		\end{center}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{center}
+			\includegraphics[scale=0.60]{\pathfig/Fig5-LocalPolyEstimation-step1.pdf}
+		\end{center}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{center}
+			\includegraphics[scale=0.60]{\pathfig/Fig5-LocalPolyEstimation-step2.pdf}
+		\end{center}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{center}
+			\includegraphics[scale=0.60]{\pathfig/Fig5-LocalPolyEstimation-step3.pdf}
+		\end{center}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{center}
+			\includegraphics[scale=0.60]{\pathfig/Fig5-LocalPolyEstimation-step4.pdf}
+		\end{center}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{center}
+			\includegraphics[scale=0.60]{\pathfig/Fig5-LocalPolyEstimation-step5.pdf}
+		\end{center}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{center}
+			\includegraphics[scale=0.60]{\pathfig/Fig5-LocalPolyEstimation-step6.pdf}
+		\end{center}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\begin{center}
+			\includegraphics[scale=0.60]{\pathfig/Fig5-LocalPolyEstimation-step7.pdf}
+		\end{center}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[scale=0.60]{\pathfig/Fig8-LinearApprox-step1.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[scale=0.60]{\pathfig/Fig8-LinearApprox-step2.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Local Polynomial Methods: Choosing bandwidth ($p=1$)}
+	\begin{itemize}
+		\item Mean Square Error Optimal (MSE-optimal).
+		\[h_{\mathtt{MSE}} = C_{\mathtt{MSE}}^{1/5}\cdot n^{-1/5}\qquad\qquad
+		  C_{\mathtt{MSE}} = C(K)\cdot\frac{\mathsf{Var}(\hat{\tau}_{\mathtt{SRD}})}{\mathsf{Bias}(\hat{\tau}_{\mathtt{SRD}})^{2}}\]\smallskip
+		
+		\item Coverage Error Optimal (CE-optimal).
+		\[h_{\mathtt{CE}} = C_{\mathtt{CE}}^{1/4}\cdot n^{-1/4}\qquad\qquad
+		  C_{\mathtt{CE}} = C(K)\cdot\frac{\mathsf{Var}(\hat{\tau}_{\mathtt{SRD}})}{|\mathsf{Bias}(\hat{\tau}_{\mathtt{SRD}})|}\]\smallskip		
+		
+		\item \textbf{Key idea}:\medskip
+		\begin{itemize}
+			\item Trade-off bias and variance of $\hat{\tau}_{\mathtt{SRD}}(h)$. Heuristically:
+			\[\uparrow~\mathsf{Bias}(\hat{\tau}_{\mathtt{SRD}})\qquad\Longrightarrow\qquad\downarrow\hat{h}
+			  \text{\qquad and\qquad}
+			  \uparrow~\mathsf{Var}(\hat{\tau}_{\mathtt{SRD}})\qquad\Longrightarrow\qquad\uparrow\hat{h}\]\smallskip
+			
+			\item Implementations: IK  first-generation while CCT second-generation plug-in rule.\newline
+			      They differ in the way $\mathsf{Var}(\hat{\tau}_{\mathtt{SRD}})$ and $\mathsf{Bias}(\hat{\tau}_{\mathtt{SRD}})$ are estimated.\medskip
+			
+			\item Rule-of-thumb: $h_{\mathtt{CE}} \propto n^{1/20} \cdot h_{\mathtt{MSE}}$.
+			
+		\end{itemize}
+		
+		
+	\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Conventional Inference Approach}
+	\begin{itemize}
+		\item ``Local-linear'' ($p=1$) estimator (w/ weights $K(\cdot)$):\medskip
+		\[%
+		\begin{tabular}
+			[c]{cc|cc}%
+			$-h\leq X_{i}<\c:$ &  &  & $\c\leq X_{i}\leq h:$\\
+			&  &  & \\
+			$Y_{i}=\alpha_{-}+(X_{i}-\c)\cdot\beta_{-}+\varepsilon_{-,i}$ &  &  &
+			$Y_{i}=\alpha_{+}+(X_{i}-\c)\cdot\beta_{+}+\varepsilon_{+,i}$%
+		\end{tabular}
+		\]
+		\medskip
+		
+		\begin{itemize}
+			\item Treatment effect (at the cutoff): $\hat{\tau}_{\mathtt{SRD}}(h)=\hat{\alpha}_{+}-\hat{\alpha}_{-}$\bigskip
+		\end{itemize}
+	
+		\item Construct usual t-test. For $\mathsf{H}_{0}:\tau_{\mathtt{SRD}}=0$,
+		\[T(h)=\frac{\hat{\tau}_{\mathtt{SRD}}}{\sqrt{\mathsf{\hat{V}}}}
+		  =\frac{\hat{\alpha}_{+}-\hat{\alpha}_{-}}{\sqrt{\mathsf{\hat{V}}_{+}+\mathsf{\hat{V}}_{-}}}\approx_{d}\mathcal{N}(0,1)
+		\]
+		\smallskip
+		
+		\item Na\"ive $95\%$ Confidence interval:
+		\[I(h)=\Big[  ~\hat{\tau}_{\mathtt{SRD}}~\pm~1.96\cdot\sqrt{\mathsf{\hat{V}}} ~\Big]\]
+	\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Robust Bias Correction Approach}
+	\begin{itemize}
+		\item \textbf{Key Problem}:
+		\[T(h_{\mathtt{MSE}})=\frac{\hat{\tau}_{\mathtt{SRD}}}{\sqrt{\mathsf{\hat{V}}}}\approx_{d}\mathcal{N}(\mathsf{B},1)\quad\neq\quad\mathcal{N}(0,1)\]
+		\begin{itemize}
+			\item $\mathsf{B}$ captures bias due to misspecification error.\bigskip
+		\end{itemize}
+		
+		\item \textbf{RBC distributional approximation}:
+		\[T^{\mathtt{bc}}(h)
+		  = \frac{\hat{\tau}_{\mathtt{SRD}}-\mathsf{\hat{B}}_{n}}{\sqrt{\mathsf{\hat{V}}}}
+		  = \underset{\approx_{d}~\mathcal{N}(0,1)}{\underbrace{\frac{\hat{\tau}_{\mathtt{SRD}}-\mathsf{B}_{n}}{\sqrt{\mathsf{\hat{V}}}}}}
+		    + \underset{\approx_{d}~\mathcal{N}(0,\gamma)}{\underbrace{\frac{\mathsf{B}-\mathsf{\hat{B}}}{\sqrt{\mathsf{\hat{V}}}}}}%
+		\]
+		\begin{itemize}
+			\item $\mathsf{\hat{B}}$ is constructed to estimate leading bias $\mathsf{B}$, that is, misspecification error.\bigskip
+		\end{itemize}
+
+		\item \textbf{RBC $95\%$ Confidence Interval}:
+		\[I_{\mathtt{RBC}} = \left[ ~\left(\hat{\tau}_{\mathtt{SRD}}-\color{blue} \mathsf{\hat{B}}\color{black}\right)
+		~\pm~ 1.96\cdot\sqrt{\mathsf{\hat{V}} + \color{blue} \mathsf{\hat{W}}\color{black}} ~\right]
+		\]		
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\centering\includegraphics[scale=0.6]{\pathfig/Fig7-EffectsBandwidths.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Empirical Illustration: Head Start (Ludwig and Miller, 2007,QJE)}
+	\begin{itemize}
+		\item \textbf{Problem}: impact of Head Start on Infant Mortality\bigskip
+		
+		\item \textbf{Data}:\medskip
+		
+		~\qquad$Y_{i}=$ child mortality 5 to 9 years old\medskip
+		
+		~\qquad$T_{i}=$ whether county received Head Start assistance\medskip
+		
+		~\qquad$X_{i}=$ 1960 poverty index\quad($\c=59.1984$)\medskip
+		
+		~\qquad$Z_{i}=$ see database.\bigskip
+		
+		\item \textbf{Potential outcomes}:\medskip
+		
+		~\qquad$Y_{i}(0)=$ child mortality if \textbf{had not received} Head
+		Start\medskip
+		
+		~\qquad$Y_{i}(1)=$ child mortality if \textbf{had received} Head Start\bigskip
+		
+		\item \textbf{Causal Inference}:\medskip
+		
+		~\qquad$Y_{i}(0) \quad\neq\quad Y_{i}|T_{i}=0$\qquad\qquad and\qquad\qquad$Y_{i}(1) \quad\neq\quad Y_{i}|T_{i}=1$\bigskip
+	\end{itemize}
+\end{frame}
+
+\hspace{-.3in}\begin{frame}\vspace{-.2in}\begin{figure}
+		\includegraphics[scale=.7,angle=0] {\pathfig/RD-Ludwig-Miller-TableIII-landscape}
+\end{figure}\end{frame}
+
+\begin{frame}\frametitle{Local Randomization Framework}
+	\begin{itemize}
+		\item \textbf{Key idea}: treatment assignment as-if randomly assigned ``near'' cutoff.\newline
+		There exists window $\W=[-w,w]$, with $-w<\c<w$, such that
+		\[\text{for all }X_{i}\in \W\Longrightarrow T_{i}\text{ independent of }	(Y_{i}(0),Y_{i}(1))\]
+		and possibly other conditions hold (e.g., knowledge of assignment mechanism).\medskip
+		\begin{itemize}
+			\item Conceptually different from continuity/extrapolation based methods.\medskip
+			\item Challenge: window (neighborhood) selection.\medskip
+			\item Challenge: small sample (estimation and) inference.\bigskip
+		\end{itemize}
+		
+		\item \textbf{Two Steps} (analogous to local polynomial methods):\medskip
+		\begin{itemize}
+			\item Given window $\W$, (estimation and) inference is ``standard'': superpopulation, large-samples designed-based methods, randomization inference methods.\medskip
+			\item Select windows $\W$ based on idea of local randomization.\medskip
+			\item As-if randomly assigned assumption can be relaxed somewhat, but it is strong.\bigskip
+		\end{itemize}
+		
+		\item \textbf{Catch}: as-if random assumption good approximation \textit{only very near cutoff}!\bigskip
+		
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\[ T_i \text{ independent of } (Y_i(0),Y_i(1)) \text{ for all } X_i\in\W=[\c-w,c+w] \]
+	\begin{figure}
+		\vspace{-0.1in}
+		\centering
+		\includegraphics[scale=0.5]{\pathfig/Fig11-RDLocRand.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Local Randomization: Finite-sample and Large-sample Methods}
+	\begin{itemize}
+		\item Given $\W$ where local randomization holds:\medskip
+		\begin{itemize}
+		\item Randomization inference (Fisher): sharp null, finite-sample exact.\medskip
+		\item Design-based (Neyman): large-sample valid, conservative.\medskip
+		\item Large-sample standard: random potential outcomes, large-sample valid.\bigskip
+		\end{itemize}
+		
+		\item All methods require window ($\W$) selection, and choice of statistic.\smallskip\newline
+		      First two also require choice/assumptions assignment mechanism.\smallskip\newline
+		      Covariate-adjustments (score or otherwise) possible.\bigskip
+		
+		\item $\W$ selection:\medskip
+		\begin{itemize}
+			\item Find neighborhood where (pre-intervention) covariate-balance holds.\medskip
+			\item Find neighborhood where outcome and score independent.\medskip
+			\item Domain-specific or application-specific choice.
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\[ T_i \text{ independent of } (Y_i(0),Y_i(1)) \text{ for all } X_i\in\W=[\c-w,c+w] \]
+	\begin{figure}
+		\vspace{-0.1in}
+		\centering
+		\includegraphics[scale=0.5]{\pathfig/Fig11-RDLocRand.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Choosing $W_0$ using predetermined covariate $Z$}
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.57]{\pathfig/Fig12-RDLocRand-WindowSel.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Empirical Illustration: Head Start (Ludwig and Miller, 2007,QJE)}
+	\begin{itemize}
+		\item \textbf{Problem}: impact of Head Start on Infant Mortality\bigskip
+		
+		\item \textbf{Data}:\medskip
+		
+		~\qquad$Y_{i}=$ child mortality 5 to 9 years old\medskip
+		
+		~\qquad$T_{i}=$ whether county received Head Start assistance\medskip
+		
+		~\qquad$X_{i}=$ 1960 poverty index\quad($\c=59.1984$)\medskip
+		
+		~\qquad$Z_{i}=$ see database.\bigskip
+		
+		\item \textbf{Potential outcomes}:\medskip
+		
+		~\qquad$Y_{i}(0)=$ child mortality if \textbf{had not received} Head
+		Start\medskip
+		
+		~\qquad$Y_{i}(1)=$ child mortality if \textbf{had received} Head Start\bigskip
+		
+		\item \textbf{Causal Inference}:\medskip
+		
+		~\qquad$Y_{i}(0) \quad\neq\quad Y_{i}|T_{i}=0$\qquad\qquad and\qquad\qquad$Y_{i}(1) \quad\neq\quad Y_{i}|T_{i}=1$\bigskip
+	\end{itemize}
+\end{frame}
+
+\hspace{-.3in}\begin{frame}\vspace{-.2in}\begin{figure}
+		\includegraphics[scale=.7,angle=0] {\pathfig/RD-Ludwig-Miller-TableIII-landscape}
+\end{figure}\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Falsification and Validation} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}\frametitle{Falsification and Validation}
+	\begin{itemize}
+		\item \textbf{RD plots and related graphical methods}:\medskip		
+		\begin{itemize}
+			\item Always plot data: main advantage of RD designs. (Check if RD design!)\medskip	
+			\item Plot histogram of $X_{i}$ (score) and its density. Careful: boundary bias.\medskip
+			\item RD plot $\E[Y_{i}|X_{i}=x]$ (outcome) and $\E[Z_{i}|X_{i}=x]$ (pre-intervention covariates).\medskip
+			\item Be careful not to oversmooth data/plots.\bigskip
+		\end{itemize}
+		
+		\item \textbf{Sensitivity and related methods}:\medskip
+		\begin{itemize}
+			\item Score density continuity: binomial test and continuity test.\medskip
+			\item Pre-intervention covariate no-effect (covariate balance).\medskip
+			\item Placebo outcomes no-effect.\medskip
+			\item Placebo cutoffs no-effect: informal continuity test away from $\c$.\medskip
+			\item Donut hole: testing for outliers/leverage near $\c$.\medskip
+			\item Different bandwidths: testing for misspecification error.\medskip
+			\item Many other setting-specific (fuzzy, geographic, etc.).
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Empirical Illustration: Head Start (Ludwig and Miller, 2007,QJE)}
+	\begin{itemize}
+		\item \textbf{Problem}: impact of Head Start on Infant Mortality\bigskip
+		
+		\item \textbf{Data}:\medskip
+		
+		~\qquad$Y_{i}=$ child mortality 5 to 9 years old\medskip
+		
+		~\qquad$T_{i}=$ whether county received Head Start assistance\medskip
+		
+		~\qquad$X_{i}=$ 1960 poverty index\quad($\c=59.1984$)\medskip
+		
+		~\qquad$Z_{i}=$ see database.\bigskip
+		
+		\item \textbf{Potential outcomes}:\medskip
+		
+		~\qquad$Y_{i}(0)=$ child mortality if \textbf{had not received} Head
+		Start\medskip
+		
+		~\qquad$Y_{i}(1)=$ child mortality if \textbf{had received} Head Start\bigskip
+		
+		\item \textbf{Causal Inference}:\medskip
+		
+		~\qquad$Y_{i}(0) \quad\neq\quad Y_{i}|T_{i}=0$\qquad\qquad and\qquad\qquad$Y_{i}(1) \quad\neq\quad Y_{i}|T_{i}=1$\bigskip
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Extrapolation and Other Topics (if time permits)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}\frametitle{RD Effects Away from the Cutoff}
+	\begin{itemize}
+		\item RD designs are credible, robust and easy to use.\medskip
+		
+		\item \textbf{Main drawback}: identification is ``local'' (not even causal if strict!).\medskip
+		
+		\item Ongoing research: How to extrapolate RD effects away from $\c$?\medskip		
+		\begin{itemize}
+			\item Internal vs. External validity.\bigskip
+		\end{itemize}
+		
+		\item \textbf{Available methods}:\medskip
+		\begin{itemize}
+			\item Marginal effects: changes at the cutoff.\medskip
+			\item Local randomization: effects near the cutoff.\medskip
+			\item Covariate-adjustment local effects: selection-on-observables near the cutoff.\medskip
+			\item Proxy variables: trace-out evolution of outcome away from cutoff.\medskip
+			\item Setting specific: fuzzy RD, multi-cutoff RD, etc.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\centering\includegraphics[scale=0.6]{\pathfig/Fig4-Heterogeneity-step1.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\centering\includegraphics[scale=0.6]{\pathfig/Fig4-Heterogeneity-step2.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[h]
+		\centering\includegraphics[scale=0.6]{\pathfig/Fig4-Heterogeneity-step3.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+
+\begin{center}
+	\LARGE Thank you!
+\end{center}
+
+\vspace{.5in}
+
+\begin{center}
+	\url{https://rdpackages.github.io/}\medskip
+\end{center}
+
+\end{frame}
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
